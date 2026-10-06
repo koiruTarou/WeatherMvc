@@ -6,3 +6,4 @@ obj/
 *.log
 *.vs/
 *.vscode/
+wwwroot/lib/
