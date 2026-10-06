@@ -1,0 +1,12 @@
+@model WeatherInfo
+
+<h2>@Model.City の天気</h2>
+
+<div class="card" style="padding:20px; margin-top:20px;">
+    <p><strong>状態：</strong> @Model.Condition</p>
+    <p><strong>コメント：</strong> @Model.Comment</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary" style="margin-top:20px;">
+    戻る
+</a>

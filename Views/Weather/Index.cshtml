@@ -1,0 +1,21 @@
+@model Dictionary<string, Dictionary<string, string>>
+
+<form method="post" asp-action="Result">
+    <select name="jmaCode" class="form-select">
+
+        @foreach (var group in Model)
+        {
+            <optgroup label="@group.Key">
+                @foreach (var city in group.Value)
+                {
+                    <option value="@city.Value">@city.Key</option>
+                }
+            </optgroup>
+        }
+
+    </select>
+
+    <button type="submit" class="btn btn-primary" style="margin-top:10px;">
+        天気を調べる
+    </button>
+</form>
