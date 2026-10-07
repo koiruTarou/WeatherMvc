@@ -1,21 +1,74 @@
-@model Dictionary<string, Dictionary<string, string>>
+@model LocationSelectViewModel
 
-<form method="post" asp-action="Result">
-    <select name="jmaCode" class="form-select">
+<form asp-action="Result" method="post">
 
-        @foreach (var group in Model)
+    <h3>地方を選択</h3>
+    <select id="centerSelect">
+        <option value="">地方を選択</option>
+        @foreach (var center in Model.AreaTree.Keys)
         {
-            <optgroup label="@group.Key">
-                @foreach (var city in group.Value)
-                {
-                    <option value="@city.Value">@city.Key</option>
-                }
-            </optgroup>
+            <option value="@center">@center</option>
         }
-
     </select>
 
-    <button type="submit" class="btn btn-primary" style="margin-top:10px;">
-        天気を調べる
-    </button>
+    <h3>県を選択</h3>
+    <select id="prefSelect" asp-for="PrefCode">
+        <option value="">県を選択</option>
+    </select>
+
+    <h3>市区町村を選択</h3>
+    <select id="citySelect" asp-for="CityCode">
+        <option value="">市区町村を選択</option>
+    </select>
+
+    <button type="submit">天気を見る</button>
+
 </form>
+
+@section Scripts {
+<script>
+    // 地方 → 県 → 市区町村の階層データ
+    const areaTree = @Html.Raw(Json.Serialize(Model.AreaTree));
+
+    // 地方選択時：県リストを更新
+    document.getElementById("centerSelect").addEventListener("change", function () {
+        const center = this.value;
+        const prefSelect = document.getElementById("prefSelect");
+        const citySelect = document.getElementById("citySelect");
+
+        prefSelect.innerHTML = "<option value=''>県を選択</option>";
+        citySelect.innerHTML = "<option value=''>市区町村を選択</option>";
+
+        if (areaTree[center]) {
+            Object.keys(areaTree[center]).forEach(pref => {
+                const opt = document.createElement("option");
+                opt.value = areaTree[center][pref].prefCode;
+                opt.textContent = pref;
+                prefSelect.appendChild(opt);
+            });
+        }
+    });
+
+    // 県選択時：市区町村リストを更新
+    document.getElementById("prefSelect").addEventListener("change", function () {
+        const prefKey = this.options[this.selectedIndex].text; // ★ 選択された「キー名」を使う
+        const center = document.getElementById("centerSelect").value;
+        const citySelect = document.getElementById("citySelect");
+
+        citySelect.innerHTML = "<option value=''>市区町村を選択</option>";
+
+        if (areaTree[center] && areaTree[center][prefKey]) {
+
+            const prefEntry = areaTree[center][prefKey]; // ★ キー名で直接アクセス
+
+            prefEntry.cities.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.keys;      // 市区町村コード
+                opt.textContent = c.value; // 市区町村名
+                citySelect.appendChild(opt);
+            });
+        }
+    });
+
+</script>
+}

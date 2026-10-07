@@ -19,17 +19,22 @@ namespace WeatherMvc.Controllers
 
 
         // 都市コード入力画面
-        [HttpGet]
+        [HttpGet]   
+
         public async Task<IActionResult> Index()
         {
-            var groups = await _common.GetCityCodeInfo();
-            return View(groups);
+            var vm = new LocationSelectViewModel
+            {
+                AreaTree = await _weather.BuildAreaTreeAsync()
+            };
+
+            return View(vm);
         }
+
 
         // 天気取得処理
         [HttpPost]
-
-        public async Task<IActionResult> Result(string jmaCode)
+        public async Task<IActionResult> Result(string PrefCode,string CityCode)
         {
             // 都市コード一覧を取得
             var groups = await _common.GetCityCodeInfo();
@@ -37,10 +42,10 @@ namespace WeatherMvc.Controllers
             // 都市名を逆引きする
             string cityName = groups
                 .SelectMany(g => g.Value)
-                .FirstOrDefault(x => x.Value == jmaCode).Key;
+                .FirstOrDefault(x => x.Value == PrefCode).Key;
 
             // 天気情報を取得
-            var info = await _weather.GetTodayWeatherAsync(jmaCode);
+            var info = await _weather.GetTodayWeatherAsync(PrefCode,CityCode);
 
             // 都市名をセット
             info.City = cityName;
