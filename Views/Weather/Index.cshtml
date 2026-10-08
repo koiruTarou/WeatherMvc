@@ -3,7 +3,7 @@
 <form asp-action="Result" method="post">
 
     <h3>地方を選択</h3>
-    <select id="centerSelect">
+    <select id="centerSelect" asp-for="CenterCode">
         <option value="">地方を選択</option>
         @foreach (var center in Model.AreaTree.Keys)
         {
@@ -23,6 +23,9 @@
 
     <button type="submit">天気を見る</button>
 
+    <input type="hidden" id="CenterName" name="CenterName" />
+    <input type="hidden" id="PrefName" name="PrefName" />
+    <input type="hidden" id="CityName" name="CityName" />
 </form>
 
 @section Scripts {
@@ -61,14 +64,35 @@
 
             const prefEntry = areaTree[center][prefKey]; // ★ キー名で直接アクセス
 
-            prefEntry.cities.forEach(c => {
+           prefEntry.cities.forEach(c => {
                 const opt = document.createElement("option");
-                opt.value = c.keys;      // 市区町村コード
-                opt.textContent = c.value; // 市区町村名
+                opt.value = c.code;
+                opt.textContent = c.name;
                 citySelect.appendChild(opt);
             });
         }
     });
+
+    // ★ submit ボタン押下時に hidden に値を詰める
+    document.querySelector("form").addEventListener("submit", function () {
+
+        const centerSelect = document.getElementById("centerSelect");
+        const prefSelect = document.getElementById("prefSelect");
+        const citySelect = document.getElementById("citySelect");
+
+        // 地方名
+        const centerName = centerSelect.options[centerSelect.selectedIndex].text;
+        document.getElementById("CenterName").value = centerName;
+
+        // 県名
+        const prefName = prefSelect.options[prefSelect.selectedIndex].text;
+        document.getElementById("PrefName").value = prefName;
+
+        // 市区町村名
+        const cityName = citySelect.options[citySelect.selectedIndex].text;
+        document.getElementById("CityName").value = cityName;
+    });
+
 
 </script>
 }

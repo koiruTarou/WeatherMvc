@@ -1,12 +1,24 @@
-c
+@model LocationSelectViewModel
 
-<h2>@Model.City の天気</h2>
 
-<div class="card" style="padding:20px; margin-top:20px;">
-    <p><strong>状態：</strong> @Model.Condition</p>
-    <p><strong>コメント：</strong> @Model.Comment</p>
-</div>
+@if (Model.weatherInfo.ResultCd == "1")
+{
+    <div class="alert alert-danger">
+        <p>Model.odel.weatherInfo.ResultMsg <p/>
+    </div>
 
+}else{
+
+    <p>地方：@Model.CenterName</p>
+    <p>県：@Model.PrefName</p>
+    <p>市区町村：@Model.CityName</p>
+
+
+    <div class="card" style="padding:20px; margin-top:20px;">
+        <p><strong>状態：</strong> @Model.weatherInfo.Condition</p>
+        <p><strong>コメント：</strong> @Model.weatherInfo.Comment</p>
+    </div>
+}
 <a asp-action="Index" class="btn btn-secondary" style="margin-top:20px;">
     戻る
 </a>

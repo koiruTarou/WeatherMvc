@@ -1,9 +1,14 @@
 namespace WeatherMvc.Models;
 public class WeatherInfo
 {
-    public string City { get; set; }
-    public string Condition { get; set; }
-    public string Comment { get; set; }
+    public required string ResultCd{ get; set; } = "1";
+
+    public required string ResultMsg{ get; set; } = "";
+    
+    public string? PrefCode { get; set; }
+    public string? CityCode { get; set; }
+    public string? Condition { get; set; } 
+    public string? Comment { get; set; }
 }
 
 
@@ -46,15 +51,30 @@ public class Class10
 
 public class LocationSelectViewModel
 {
-    public string PrefCode { get; set; }
-    public string CityCode { get; set; }
+
+    public string CenterCode { get; set; }  // 地方コード
+    public string CenterName { get; set; }  // 地方名
+    public string PrefCode { get; set; }    // 県コード
+    public string PrefName { get; set; }    // 県名
+    public string CityCode { get; set; }    // 市区町村コード
+    public string CityName { get; set; }    // 市区町村名
 
     // 地方 → 県 → 市区町村の階層構造
     public Dictionary<string, Dictionary<string, PrefEntry>> AreaTree { get; set; }
+
+    public WeatherInfo weatherInfo { get; set; } //取得した天気情報
+}
+
+public class CityEntry
+{
+    public string name { get; set; }
+    public string code { get; set; }
+
+    public string parent { get; set; }
 }
 
 public class PrefEntry
 {
     public string prefCode { get; set; }
-    public List<(string name, string code)> cities { get; set; }
+    public List<CityEntry> cities { get; set; }
 }
